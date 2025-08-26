@@ -1,0 +1,27 @@
+{
+	"PkgHandler": {
+		"Pattern": "/dd-metrics",
+		"StripPrefix": "/dd-metrics",
+		"Include": [
+			"/src/github.com/raywall/dd-metrics/*.go",
+            "/src/github.com/raywall/dd-metrics/cmd/*.go"
+		],
+		"Exclude": [
+            "/src/github.com/raywall/dd-metrics/.github/*",
+			"/src/github.com/raywall/dd-metrics/*_test.go",
+            "/src/github.com/raywall/dd-metrics/.goreleaser.yml",
+            "/src/github.com/raywall/dd-metrics/.godoc_conf",
+            "/src/github.com/raywall/dd-metrics/.gitignore",
+            "/src/github.com/raywall/dd-metrics/*.sum",
+            "/src/github.com/raywall/dd-metrics/*.mod"
+		],
+		"IgnoredSuffixes": [
+			"iface"
+		]
+	},
+	"Github": {
+		"Tag": "main",
+		"Repo": "/raywall/dd-metrics",
+		"UseGithub": true
+	}
+}
