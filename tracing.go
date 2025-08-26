@@ -24,7 +24,7 @@ type TracerProvider interface {
 // TracingHandler para spans
 type TracingHandler struct {
 	*CustomHandler
-	tracer TracerHandler
+	tracer trace.Tracer
 }
 
 func NewTracingHandler(delegate TracerHandler, tracerProvider TracerProvider) *TracingHandler {
