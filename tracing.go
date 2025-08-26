@@ -9,17 +9,17 @@ import (
 	"go.opentelemetry.io/otel/trace"
 )
 
-type TracerHandler interface {
-	Start(ctx context.Context, spanName string, opts ...trace.SpanStartOption) (context.Context, trace.Span)
-	Enabled(context.Context, slog.Level) bool
-	Handle(context.Context, slog.Record) error
-	WithAttrs(attrs []slog.Attr) slog.Handler
-	WithGroup(name string) slog.Handler
-}
+// type TracerHandler interface {
+// 	Start(ctx context.Context, spanName string, opts ...trace.SpanStartOption) (context.Context, trace.Span)
+// 	Enabled(context.Context, slog.Level) bool
+// 	Handle(context.Context, slog.Record) error
+// 	WithAttrs(attrs []slog.Attr) slog.Handler
+// 	WithGroup(name string) slog.Handler
+// }
 
-type TracerProvider interface {
-	Tracer(name string, opts ...trace.TracerOption) trace.Tracer
-}
+// type TracerProvider interface {
+// 	Tracer(name string, opts ...trace.TracerOption) trace.Tracer
+// }
 
 // TracingHandler para spans
 type TracingHandler struct {
@@ -27,7 +27,7 @@ type TracingHandler struct {
 	tracer trace.Tracer
 }
 
-func NewTracingHandler(delegate TracerHandler, tracerProvider TracerProvider) *TracingHandler {
+func NewTracingHandler(delegate slog.Handler, tracerProvider trace.TracerProvider) *TracingHandler {
 	h := &TracingHandler{
 		CustomHandler: NewBaseHandler(delegate),
 		tracer:        tracerProvider.Tracer("ddmetrics"),

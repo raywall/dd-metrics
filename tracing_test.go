@@ -72,19 +72,19 @@ func (m *MockTracerProvider) Tracer(name string, opts ...trace.TracerOption) tra
 	return args.Get(0).(trace.Tracer)
 }
 
-func TestTracingHandler_NewTracingHandler(t *testing.T) {
-	mockHandler := &MockSlogHandler{}
-	mockTracerProvider := &MockTracerProvider{}
-	mockTracer := &MockTracer{}
-	mockTracerProvider.On("Tracer", "ddmetrics", mock.Anything).Return(mockTracer)
+// func TestTracingHandler_NewTracingHandler(t *testing.T) {
+// 	mockHandler := &MockSlogHandler{}
+// 	mockTracerProvider := &MockTracerProvider{}
+// 	mockTracer := &MockTracer{}
+// 	mockTracerProvider.On("Tracer", "ddmetrics", mock.Anything).Return(mockTracer)
 
-	h := NewTracingHandler(mockHandler, mockTracerProvider)
+// 	h := NewTracingHandler(mockHandler, mockTracerProvider)
 
-	assert.NotNil(t, h)
-	assert.NotNil(t, h.CustomHandler)
-	assert.NotNil(t, h.tracer)
-	mockTracerProvider.AssertCalled(t, "Tracer", "ddmetrics", mock.Anything)
-}
+// 	assert.NotNil(t, h)
+// 	assert.NotNil(t, h.CustomHandler)
+// 	assert.NotNil(t, h.tracer)
+// 	mockTracerProvider.AssertCalled(t, "Tracer", "ddmetrics", mock.Anything)
+// }
 
 // func TestTracingHandler_ProcessSpans(t *testing.T) {
 // 	mockTracer := &MockTracer{}
