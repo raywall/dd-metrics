@@ -1,5 +1,10 @@
 package ddmetrics
 
+import (
+	"context"
+	"log/slog"
+)
+
 // CustomHandler base (como antes)
 type CustomHandler struct {
 	delegate slog.Handler       // Handler original (JSON)

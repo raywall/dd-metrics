@@ -1,9 +1,39 @@
+// metrics_handler.go
 package ddmetrics
+
+import (
+	"log/slog"
+
+	"github.com/DataDog/datadog-go/v5/statsd"
+)
+
+type DatadogClient interface {
+	Gauge(name string, value float64, tags []string, rate float64) error
+	Count(name string, value int64, tags []string, rate float64) error
+	Histogram(name string, value float64, tags []string, rate float64) error
+	Close() error
+	// CountWithTimestamp(name string, value int64, tags []string, rate float64, timestamp time.Time) error
+	// Decr(name string, tags []string, rate float64) error
+	// Distribution(name string, value float64, tags []string, rate float64) error
+	// Event(e *statsd.Event) error
+	// Flush() error
+	// GaugeWithTimestamp(name string, value float64, tags []string, rate float64, timestamp time.Time) error
+	// GetTelemetry() statsd.Telemetry
+	// GetTransport() string
+	// Incr(name string, tags []string, rate float64) error
+	// IsClosed() bool
+	// ServiceCheck(sc *statsd.ServiceCheck) error
+	// Set(name string, value string, tags []string, rate float64) error
+	// SimpleEvent(title string, text string) error
+	// SimpleServiceCheck(name string, status statsd.ServiceCheckStatus) error
+	// TimeInMilliseconds(name string, value float64, tags []string, rate float64) error
+	// Timing(name string, value time.Duration, tags []string, rate float64) error
+}
 
 // Versão para custom metrics com StatsD (como antes)
 type MetricsHandler struct {
 	*CustomHandler
-	client *statsd.Client
+	client DatadogClient
 }
 
 func NewMetricsHandler(delegate slog.Handler, statsdAddr string) *MetricsHandler {
