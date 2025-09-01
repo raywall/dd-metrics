@@ -1,49 +1,44 @@
 package main
 
 import (
-	"log/slog"
-	"os"
-	"time"
+	"context"
+	"log"
 
 	ddmetrics "github.com/raywall/dd-metrics"
 )
 
+var (
+	handler *ddmetrics.Handler
+	err     error
+)
+
+func init() {
+	tags := []string{
+		"env:development",
+		"service:example_app",
+		"version:1.0.0",
+	}
+
+	handler, err = ddmetrics.NewHandler(context.Background(), ddmetrics.JSON, tags)
+	if err != nil {
+		log.Fatal("Erro ao criar handler:", err)
+	}
+
+	err = handler.StartTrace("app-tester", "domain", "service", "127.0.0.1", "8126")
+	if err != nil {
+		log.Fatal("Erro ao iniciar trace:", err)
+	}
+
+	err = handler.StartMetric("127.0.0.1", "8125", "custom.")
+	if err != nil {
+		log.Fatal("Erro ao iniciar métrica:", err)
+	}
+}
+
 func main() {
-	// Configuração
-	jsonHandler := slog.NewJSONHandler(os.Stdout, nil)
-	metricsHandler := ddmetrics.NewMetricsHandler(jsonHandler, "127.0.0.1:8125")
-	logger := slog.New(metricsHandler)
-	slog.SetDefault(logger)
+	defer handler.StopTrace()
+	defer handler.StopMetric()
 
-	// Wrapper para métricas
-	metricLogger := &ddmetrics.MetricLogger{Logger: logger}
-
-	// Exemplo: Log normal (emite JSON e processa se tiver attrs de métrica)
-	slog.Info("Evento normal", "key", "value")
-
-	// Exemplo: Somente métrica (não emite JSON, só processa assincronamente)
-	metricLogger.Metric("Evento métrica", "metric_name", "app.latency", "metric_type", "gauge", "metric_value", 150.5)
-
-	// Dê tempo para processar
-	time.Sleep(1 * time.Second)
-
-	// Shutdown graceful
-	metricsHandler.Shutdown()
-
-	// // Configura o OpenTelemetry (exemplo com exportador stdout)
-	// exporter, err := stdouttrace.New(stdouttrace.WithPrettyPrint())
-	// if err != nil {
-	// 	panic(err)
-	// }
-	// tp := trace.NewTracerProvider(trace.WithBatcher(exporter))
-	// otel.SetTracerProvider(tp)
-	// defer tp.Shutdown(context.Background())
-
-	// // Configura o logger com TracingHandler
-	// handler := ddmetrics.NewTracingHandler(slog.NewJSONHandler(os.Stdout, nil), tp)
-	// logger := &ddmetrics.MetricLogger{slog.New(handler)}
-
-	// // Usa o logger para criar um span
-	// ctx := context.Background()
-	// ctx = logger.Span(ctx, "my-operation", slog.String("user_id", "123"), slog.String("action", "process"))
+	handler.SendMetric("example.metric", 42.0)
+	log.Println("Trace sent to OpenTelemetry Collector")
 }
