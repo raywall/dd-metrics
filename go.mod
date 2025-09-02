@@ -1,6 +1,6 @@
 module github.com/raywall/dd-metrics
 
-go 1.24.6
+go 1.24.4
 
 require (
 	github.com/DataDog/datadog-go v4.8.3+incompatible
